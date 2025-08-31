@@ -1,0 +1,74 @@
+<div class="container mt-5">
+  <h2 class="text-center mb-4">🛒 Checkout</h2>
+
+  {{#if cartItems.length}}
+    <div class="row">
+      <!-- Cart Summary -->
+      <div class="col-md-8">
+        <table class="table table-bordered table-hover text-center align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Product</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each cartItems}}
+              <tr>
+                <td><img src="/productimages/{{this.item}}.jpg" width="60"></td>
+                <td>{{this.product.Name}}</td>
+                <td>₹{{this.product.Price}}</td>
+                <td>{{this.quantity}}</td>
+                <td>₹{{multiply this.quantity this.product.Price}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Order Summary & Address -->
+      <div class="col-md-4">
+        <div class="card shadow p-3">
+          <h5 class="mb-3">Order Summary</h5>
+          <p class="fw-bold">Grand Total: ₹{{total}}</p>
+
+          <!-- checkout form -->
+          <form id="checkout-form" action="/order-success" method="post">
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" name="name" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <textarea name="address" class="form-control" rows="2" required></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Mobile</label>
+              <input type="text" name="mobile" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Payment Method</label>
+              <select name="payment-method" class="form-select" required>
+                <option value="COD">Cash on Delivery</option>
+                <option value="ONLINE">Online Payment</option>
+              </select>
+            </div>
+
+            <input type="hidden" name="userId" value="{{user._id}}">
+            <button type="submit" id="place-order-btn" class="btn btn-success w-100">
+              Place Order
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  {{else}}
+    <div class="alert alert-warning text-center">Your cart is empty!</div>
+  {{/if}}
+</div>

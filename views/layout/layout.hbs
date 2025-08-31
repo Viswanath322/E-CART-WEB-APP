@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJkAAACUCAMAAAC3HHtWAAAAY1BMVEX///8JBQQAAAD5+flxcXHr6+t5eXksLCza2tofHh4nJyfo6OjX19fPz8+8vb0GAADDw8Kurq7y8vKenp6Af39KSkrg4OCZmJlRUVEaGhpdXV00NDSSkpJkZGQ+PT4XFheIiIhS2UkmAAADbklEQVR4nO2b1xaiMBBAYWhKb4IV+f+vXFZclQlYYEKy58x91SPXEDIlwTAYhmEYhmEYhmEY5heCMHqSOqp17gTZDgY0uWqlnuwEkJhPAFLVSj0lgDkAStVKPcVgvP6K+YFqpxuhiUYsgVi10w3rgsRMuKh26smEewl63EsHz34TCtVOPaUgttNjKUvxvUwgVO3U4wlDpslSdhbEGj0CZnUVzDLVTj2NIHZUrdQTC2IHPaZ/ddJ1KbMFMZ/6ElaeO79TCGIQkWpVce3uG3/7K0JUMqEl1LKyvQ8zEcSALixV5+7ncHiZS0K4lBWe+MfnAxeLyCs8Unp1g18RicUHSq/OrCYSE8qdpWJ7oul/ppr3dxKqAtOlHTC6rCwjFyMqMFNcIC6FrMAUUoSlUGVlQoa8WIxoKau2xGZAlZW1Y2Jzo/oNIrFgLEmA5mjPxK03NGJGPSJWRk5uzYXIa+TBhKMeDZIIV4jg0v3rReDkHVzVRncsFDHB06PYN4wcVdW69KANwxmGTPA1mWSGsUFD1j4+yYPvkGUWIbNnuRPDN0XmwVzL7Jm9xF+GIllm6cAsGZjh2DAGm7EZm7EZmy0xUxsD3sRN0/+GgywznGucH5844XfIMkM1HTTa5GcOKp2IO/gLwNvxsNdm0ITaqVVt9A+8u0zWlViMhWv0BGw9avSRFi00NVUrfxGB2NXuVnbPdmdg06oJu5J3uTnQmkVkmyfkQVQ4laKNWU7VqKVPPGKiPScJKRFR311Gsjb6fGph1gV2gr06OQmuS6AmKfWulz8GsoqCaLfUDRo5ZkbewjI3iQmU454WuMFOZl+8KpqZwbyDasNpiiCz983J+5WmXGUnIa82P1LpcTSV+b9w0ro9Z58ftjwtuu+tWNhn/drhuR/mdbS7VQzXi+wF406XefTxHT6cOm0f31vpQO9LYQD+m1F7eRMAzDXuaPyaEL05rhK+Fl1wlS82bA/BYXIwBgc9KE81TuEMc8jpBCIZNgXlb8Dj1u3USbIcd96kx6cUXdGe6PU56HtSc6AbeMym7pKFx0y6GXr5ZnqeXdeeZ/o+m2g9m36/a+O/rmfbNVrPrzHg3ZmX1WOAkV/uUw1g+/aC5dpx85Fr+J9yjXQPq+YaHUFalOfscyM5j4qyzUJttjcYhmEYhmEYhmEYpucPANw5kIZyNukAAAAASUVORK5CYII=" type="image/x-icon">
+    <title class="text-primary">E-cart</title>
+    
+  </head>
+  <body>
+
+<body>
+  {{#if isAdmin}}
+    {{> admin-head}}
+{{else}}
+    {{> user-head}}
+{{/if}}
+
+    
+
+{{{body}}}
+
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    --><!-- Razorpay Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="/javascripts/script.js"></script>
+
+  </body>
+</html>
+

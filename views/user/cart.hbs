@@ -1,0 +1,69 @@
+<section class="container mt-5">
+  <h2 class="mb-4">My Cart</h2>
+
+  {{#if products.length}}
+  <table class="table table-bordered align-middle">
+    <thead>
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">Product</th>
+        <th scope="col">Price</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Subtotal</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each products}}
+      <tr id="row-{{this.product._id}}">
+        <th scope="row">{{inc @index}}</th>
+
+        <td>
+          <img src="/productimages/{{this.product._id}}.jpg" width="70" height="70" class="me-2 rounded">
+          {{this.product.Name}}
+        </td>
+
+        <td id="price-{{this.product._id}}" data-price="{{this.product.Price}}">
+          ₹{{this.product.Price}}
+        </td>
+
+        <td class="d-flex align-items-center">
+          <button class="btn btn-sm btn-secondary"
+                  onclick="changeQuantity('{{../cartId}}','{{this.product._id}}',-1)">
+            -
+          </button>
+
+          <span id="qty-{{this.product._id}}" class="mx-2">{{this.quantity}}</span>
+
+          <button class="btn btn-sm btn-secondary"
+                  onclick="changeQuantity('{{../cartId}}','{{this.product._id}}',1)">
+            +
+          </button>
+        </td>
+
+        <td id="subtotal-{{this.product._id}}">
+          ₹{{multiply this.product.Price this.quantity}}
+        </td>
+
+        <td>
+          <button class="btn btn-danger btn-sm"
+                  onclick="removeProduct('{{../cartId}}','{{this.product._id}}')">
+            Remove
+          </button>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-between mt-4">
+    <h4>Grand Total: <span id="grand-total">₹{{total}}</span></h4>
+    <a href="/checkout" class="btn btn-primary">Checkout</a>
+  </div>
+
+  {{else}}
+    <div class="alert alert-warning text-center">
+      Your cart is empty.
+    </div>
+  {{/if}}
+</section>

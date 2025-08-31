@@ -1,0 +1,58 @@
+<!-- Navbar Section -->
+<section>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <!-- Brand -->
+      <a class="navbar-brand fw-bold" href="#">E-Cart</a>
+
+      <!-- Mobile menu toggle -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" 
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navbar content -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- Left links -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/">Products</a>
+          </li>
+        </ul>
+
+        <!-- Search bar -->
+        <form class="d-flex me-3" role="search" onsubmit="return false;">
+  <input class="form-control me-2" id="search-box" type="search" 
+         placeholder="Search products..." aria-label="Search">
+</form>
+
+
+     <!-- Right links -->
+<ul class="navbar-nav mb-2 mb-lg-0">
+  <li class="nav-item">
+    <a class="nav-link" href="/cart">Cart 🛒 <span class="badge bg-danger" id="cart-count">{{cartCount}}</span></a>
+  </li>
+
+  {{#if user}}
+    <li class="nav-item">
+      <a class="nav-link" href="/view-orders">My Orders</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/logout">Logout ({{user.name}})</a>
+    </li>
+  {{else}}
+    <li class="nav-item">
+      <a class="nav-link" href="/login">Login</a>
+    </li>
+  {{/if}}
+</ul>
+
+      </div>
+    </div>
+  </nav>
+</section>

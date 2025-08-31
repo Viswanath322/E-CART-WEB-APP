@@ -1,0 +1,30 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+
+.product-row {
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.product-row:hover {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background: #fff;
+}
+.product-img {
+  max-height: 180px;
+  object-fit: contain;
+}
+.rating-badge {
+  background-color: #388e3c !important;
+  font-size: 0.75rem;
+  padding: 0.35em 0.6em;
+}
+.feature-list li {
+  margin-bottom: 2px;
+}
