@@ -1,0 +1,41 @@
+<div class="v-table-card">
+  <div class="v-table-header">
+    <span class="v-table-title">Registered Users</span>
+    <span style="font-size:0.8rem; color:var(--text-muted);">{{users.length}} users total</span>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="v-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>User</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Joined</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each users}}
+        <tr>
+          <td style="color:var(--text-muted);">{{inc @index}}</td>
+          <td>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <div class="v-user-initials">{{#if this.name}}{{this.name.[0]}}{{else}}U{{/if}}</div>
+              <div style="font-weight:600; font-size:0.875rem;">{{#if this.name}}{{this.name}}{{else}}—{{/if}}</div>
+            </div>
+          </td>
+          <td style="color:var(--text-muted); font-size:0.875rem;">{{this.Email}}</td>
+          <td style="color:var(--text-muted); font-size:0.875rem;">{{#if this.Phone}}{{this.Phone}}{{else}}—{{/if}}</td>
+          <td style="color:var(--text-muted); font-size:0.8rem;">{{this._id}}</td>
+        </tr>
+        {{else}}
+        <tr>
+          <td colspan="5" style="text-align:center; color:var(--text-muted); padding:3rem;">
+            No users registered yet
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>

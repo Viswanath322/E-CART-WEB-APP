@@ -1,69 +1,87 @@
-<section class="container mt-5">
-  <h2 class="mb-4">My Cart</h2>
+<div class="v-section">
+  <div class="v-section-header">
+    <h1 class="v-section-title">My Cart</h1>
+    <a href="/" class="v-btn v-btn-secondary v-btn-sm">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Continue Shopping
+    </a>
+  </div>
 
   {{#if products.length}}
-  <table class="table table-bordered align-middle">
-    <thead>
-      <tr>
-        <th scope="col">No</th>
-        <th scope="col">Product</th>
-        <th scope="col">Price</th>
-        <th scope="col">Quantity</th>
-        <th scope="col">Subtotal</th>
-        <th scope="col">Action</th>
-      </tr>
-    </thead>
-    <tbody>
+  <div class="v-cart-page">
+    <!-- Cart Items -->
+    <div>
       {{#each products}}
-      <tr id="row-{{this.product._id}}">
-        <th scope="row">{{inc @index}}</th>
+      <div class="v-cart-item" id="row-{{this.product._id}}">
+        <img class="v-cart-img" src="/productimages/{{this.product._id}}.jpg" alt="{{this.product.Name}}"
+             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 90 90%22><rect fill=%22%231C1B29%22 width=%2290%22 height=%2290%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%238B8BA0%22 font-size=%2230%22>📦</text></svg>'">
 
-        <td>
-          <img src="/productimages/{{this.product._id}}.jpg" width="70" height="70" class="me-2 rounded">
-          {{this.product.Name}}
-        </td>
+        <div class="v-cart-info">
+          <div class="v-cart-name">{{this.product.Name}}</div>
+          <div class="v-cart-price">₹{{this.product.Price}} per item</div>
 
-        <td id="price-{{this.product._id}}" data-price="{{this.product.Price}}">
-          ₹{{this.product.Price}}
-        </td>
+          <div class="v-qty-stepper">
+            <button class="v-qty-btn" onclick="changeQuantity('{{../cartId}}','{{this.product._id}}',-1)">−</button>
+            <span class="v-qty-num" id="qty-{{this.product._id}}">{{this.quantity}}</span>
+            <button class="v-qty-btn" onclick="changeQuantity('{{../cartId}}','{{this.product._id}}',1)">+</button>
+          </div>
+        </div>
 
-        <td class="d-flex align-items-center">
-          <button class="btn btn-sm btn-secondary"
-                  onclick="changeQuantity('{{../cartId}}','{{this.product._id}}',-1)">
-            -
+        <div style="display:flex; flex-direction:column; align-items:flex-end; justify-content:space-between; gap:0.5rem;">
+          <button class="v-remove-btn" onclick="removeProduct('{{../cartId}}','{{this.product._id}}')" title="Remove">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
           </button>
-
-          <span id="qty-{{this.product._id}}" class="mx-2">{{this.quantity}}</span>
-
-          <button class="btn btn-sm btn-secondary"
-                  onclick="changeQuantity('{{../cartId}}','{{this.product._id}}',1)">
-            +
-          </button>
-        </td>
-
-        <td id="subtotal-{{this.product._id}}">
-          ₹{{multiply this.product.Price this.quantity}}
-        </td>
-
-        <td>
-          <button class="btn btn-danger btn-sm"
-                  onclick="removeProduct('{{../cartId}}','{{this.product._id}}')">
-            Remove
-          </button>
-        </td>
-      </tr>
+          <div class="v-cart-subtotal" id="subtotal-{{this.product._id}}">
+            ₹{{multiply this.product.Price this.quantity}}
+          </div>
+        </div>
+      </div>
       {{/each}}
-    </tbody>
-  </table>
+    </div>
 
-  <div class="d-flex justify-content-between mt-4">
-    <h4>Grand Total: <span id="grand-total">₹{{total}}</span></h4>
-    <a href="/checkout" class="btn btn-primary">Checkout</a>
+    <!-- Order Summary -->
+    <div class="v-cart-summary">
+      <h3>Order Summary</h3>
+      <div class="v-summary-row">
+        <span>Subtotal ({{products.length}} items)</span>
+        <span id="grand-total">₹{{total}}</span>
+      </div>
+      <div class="v-summary-row">
+        <span>Shipping</span>
+        <span style="color:var(--success);">FREE</span>
+      </div>
+      <div class="v-summary-row">
+        <span>Tax</span>
+        <span>Included</span>
+      </div>
+      <div class="v-summary-total">
+        <span>Total</span>
+        <span id="grand-total-2">₹{{total}}</span>
+      </div>
+      <a href="/checkout" class="v-btn v-btn-primary v-btn-block" style="margin-top:1.25rem;">
+        Proceed to Checkout
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <div style="text-align:center; margin-top:0.75rem; font-size:0.8rem; color:var(--text-muted);">
+        🔒 Secure checkout powered by Razorpay
+      </div>
+    </div>
   </div>
 
   {{else}}
-    <div class="alert alert-warning text-center">
-      Your cart is empty.
-    </div>
+  <div class="v-empty-state">
+    <div class="v-empty-icon">🛒</div>
+    <div class="v-empty-title">Your cart is empty</div>
+    <div class="v-empty-desc">Looks like you haven't added anything to your cart yet.</div>
+    <a href="/" class="v-btn v-btn-primary">Start Shopping</a>
+  </div>
   {{/if}}
-</section>
+</div>
+
+<script>
+  // Keep both total spans in sync
+  function syncTotals(val) {
+    document.getElementById('grand-total').textContent = '₹' + val;
+    document.getElementById('grand-total-2').textContent = '₹' + val;
+  }
+</script>

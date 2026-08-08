@@ -1,41 +1,72 @@
-<!-- Products Table Section -->
-<section>
- <div class="container mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-1">Products List</h2>
-    <a href="/admin/addproducts" class="btn btn-success">add product</a>
-  </div>
-</div>
-
-    
-    <div class="table-responsive container">
-      <table class="table table-striped table-hover align-middle  table-primary ">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">NO</th>
-            <th scope="col">Image</th>
-            <th scope="col">Product Name</th>
-            <th scope="col">Price</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each products}}
-          <tr>
-            <th scope="row">{{inc @index}}</th>
-            <td>
-              <img src="/productimages/{{this._id}}.jpg" alt="{{this.name}}" class="img-thumbnail " style="width: 50px; height: auto;">
-            </td>
-            <td>{{this.Name}}</td>
-            <td>₹{{this.Price}}</td> 
-            <td>
-              <a href="/admin/editproduct/{{this._id}}" class="btn btn-sm btn-primary">EDIT</a>
-              <a href="/admin/deleteproduct/{{this._id}}  " class="btn btn-sm btn-danger " onclick="return confirm('are you sure u want to delete {{this.Name}} ?')">DELETE</a>
-            </td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
+<div class="v-table-card">
+  <div class="v-table-header">
+    <span class="v-table-title">Products</span>
+    <div style="display:flex; gap:0.75rem; align-items:center;">
+      <form action="/admin/search" method="get" class="v-admin-search">
+        <input type="text" name="q" placeholder="Search products..." value="{{searchQuery}}">
+        <button type="submit" class="v-btn v-btn-secondary v-btn-sm">Search</button>
+      </form>
+      <a href="/admin/addproducts" class="v-btn v-btn-primary v-btn-sm">+ Add Product</a>
     </div>
   </div>
-</section>
+  <div style="overflow-x:auto;">
+    <table class="v-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Image</th>
+          <th>Product Name</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+        <tr>
+          <td style="color:var(--text-muted);">{{inc @index}}</td>
+          <td>
+            <img class="v-table-img" src="/productimages/{{this._id}}.jpg" alt="{{this.Name}}"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 44 44%22><rect fill=%22%231C1B29%22 width=%2244%22 height=%2244%22/></svg>'">
+          </td>
+          <td style="font-weight:600;">{{this.Name}}</td>
+          <td>
+            {{#if this.Category}}
+            <span class="v-status-chip" style="background:rgba(108,99,255,0.12); color:var(--primary-light);">{{this.Category}}</span>
+            {{else}}
+            <span style="color:var(--text-dim);">—</span>
+            {{/if}}
+          </td>
+          <td style="font-weight:700;">₹{{this.Price}}</td>
+          <td>
+            <div class="v-table-actions">
+              <a href="/admin/editproduct/{{this._id}}" class="v-btn v-btn-secondary v-btn-sm">Edit</a>
+              <a href="/admin/deleteproduct/{{this._id}}"
+                 class="v-btn v-btn-danger v-btn-sm"
+                 onclick="return confirm('Delete {{this.Name}}? This cannot be undone.')">Delete</a>
+            </div>
+          </td>
+        </tr>
+        {{else}}
+        <tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:3rem;">
+          No products found. <a href="/admin/addproducts" style="color:var(--primary-light);">Add one?</a>
+        </td></tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  {{#if totalPages}}
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; border-top:1px solid var(--border-light);">
+    <span style="font-size:0.8rem; color:var(--text-muted);">Page {{currentPage}} of {{totalPages}}</span>
+    <div style="display:flex; gap:0.5rem;">
+      {{#if (gt currentPage 1)}}
+      <a href="?page={{dec currentPage}}" class="v-btn v-btn-secondary v-btn-sm">← Prev</a>
+      {{/if}}
+      {{#if (lt currentPage totalPages)}}
+      <a href="?page={{inc currentPage}}" class="v-btn v-btn-secondary v-btn-sm">Next →</a>
+      {{/if}}
+    </div>
+  </div>
+  {{/if}}
+</div>

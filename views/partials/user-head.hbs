@@ -1,58 +1,75 @@
-<!-- Navbar Section -->
-<section>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <!-- Brand -->
-      <a class="navbar-brand fw-bold" href="#">E-Cart</a>
+<nav class="v-navbar" id="v-navbar">
+  <div class="v-navbar-inner">
+    <!-- Logo -->
+    <a href="/" class="v-logo">V-Cart</a>
 
-      <!-- Mobile menu toggle -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-              data-bs-target="#navbarNav"
-              aria-controls="navbarNav" aria-expanded="false" 
-              aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- Navbar content -->
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <!-- Left links -->
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/">Products</a>
-          </li>
-        </ul>
-
-        <!-- Search bar -->
-        <form class="d-flex me-3" role="search" onsubmit="return false;">
-  <input class="form-control me-2" id="search-box" type="search" 
-         placeholder="Search products..." aria-label="Search">
-</form>
-
-
-     <!-- Right links -->
-<ul class="navbar-nav mb-2 mb-lg-0">
-  <li class="nav-item">
-    <a class="nav-link" href="/cart">Cart 🛒 <span class="badge bg-danger" id="cart-count">{{cartCount}}</span></a>
-  </li>
-
-  {{#if user}}
-    <li class="nav-item">
-      <a class="nav-link" href="/view-orders">My Orders</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/logout">Logout ({{user.name}})</a>
-    </li>
-  {{else}}
-    <li class="nav-item">
-      <a class="nav-link" href="/login">Login</a>
-    </li>
-  {{/if}}
-</ul>
-
-      </div>
+    <!-- Search -->
+    <div class="v-search-wrap">
+      <svg class="v-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input class="v-search-input" id="search-box" type="search" placeholder="Search products..." autocomplete="off">
+      <div class="v-search-dropdown" id="search-dropdown"></div>
     </div>
-  </nav>
-</section>
+
+    <!-- Right nav -->
+    <ul class="v-nav-links">
+      <li>
+        <a href="/" class="v-nav-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </a>
+      </li>
+      <li>
+        <a href="/wishlist" class="v-nav-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          Wishlist
+        </a>
+      </li>
+
+      <!-- Cart -->
+      <li>
+        <a href="/cart" class="v-cart-btn" id="cart-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Cart
+          {{#if cartCount}}
+          <span class="v-cart-badge" id="cart-count">{{cartCount}}</span>
+          {{else}}
+          <span class="v-cart-badge" id="cart-count" style="display:none">0</span>
+          {{/if}}
+        </a>
+      </li>
+
+      {{#if user}}
+      <!-- User dropdown -->
+      <li class="v-dropdown">
+        <div class="v-user-avatar" title="{{user.name}}">
+          {{user.name.[0]}}
+        </div>
+        <div class="v-dropdown-menu">
+          <div style="padding:0.75rem 1rem 0.5rem; font-size:0.875rem; font-weight:600; color:var(--text);">{{user.name}}</div>
+          <div style="padding:0 1rem 0.5rem; font-size:0.78rem; color:var(--text-muted);">{{user.Email}}</div>
+          <div class="v-dropdown-divider"></div>
+          <a href="/profile" class="v-dropdown-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            My Profile
+          </a>
+          <a href="/view-orders" class="v-dropdown-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17H7A5 5 0 017 7h2"/><path d="M15 7h2a5 5 0 010 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            My Orders
+          </a>
+          <div class="v-dropdown-divider"></div>
+          <a href="/logout" class="v-dropdown-item danger">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+          </a>
+        </div>
+      </li>
+      {{else}}
+      <li>
+        <a href="/Login" class="v-btn v-btn-primary v-btn-sm">Sign In</a>
+      </li>
+      {{/if}}
+    </ul>
+  </div>
+</nav>

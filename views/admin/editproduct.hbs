@@ -1,33 +1,90 @@
-<div class="container mt-4">
-  <div class="row">
-    <div class="col-md-6">
-      <h2 class="text-center">editproduct</h2>
-      <form action="/admin/editproduct/{{product._id}}" enctype="multipart/form-data" method="post" >
-        <label for="">Name</label>
-        <input type="text" name="Name" class="form-control" value="{{product.Name}}">
+<div style="max-width:700px;">
+  <div style="margin-bottom:1.5rem;">
+    <h1 style="font-size:1.5rem; margin-bottom:0.25rem;">Edit Product</h1>
+    <p style="color:var(--text-muted); font-size:0.875rem;">Update the product details below.</p>
+  </div>
 
-        <label for="">Category</label>
-        <input type="text" name="Category" class="form-control" value="{{product.Category}}">
-
-        <label for="">Price</label>
-        <input type="text" name="Price" class="form-control" value="{{product.Price}}">
-
-        <label for="">Description</label>
-        <input type="text" name="Description" class="form-control" value="{{product.Description}}">
-
-        <label for="">Image</label>
-        <img src="/productimages/{{product._id}}.jpg" alt="" style="width: 120px; height:auto" id="imgview">
-        <input type="file"  name="image"  class="form-control" onchange="viewpic(event)">
-
-        <button type="submit" class="btn btn-success mt-4">Submit</button>
-      </form>
+  <div class="v-form-card">
+    <div style="display:flex; align-items:center; gap:1rem; padding-bottom:1.25rem; margin-bottom:1.25rem; border-bottom:1px solid var(--border-light);">
+      <img src="/productimages/{{product._id}}.jpg" style="width:70px; height:70px; object-fit:cover; border-radius:var(--radius-md);" id="current-img"
+           onerror="this.style.display='none'">
+      <div>
+        <div style="font-weight:600;">{{product.Name}}</div>
+        <div style="font-size:0.8rem; color:var(--text-muted);">ID: {{product._id}}</div>
+      </div>
     </div>
+
+    <form action="/admin/editproduct/{{product._id}}" method="post" enctype="multipart/form-data">
+      <div class="v-form-grid-2">
+        <div class="v-form-group">
+          <label class="v-label">Product Name</label>
+          <input class="v-input" type="text" name="Name" value="{{product.Name}}" required>
+        </div>
+        <div class="v-form-group">
+          <label class="v-label">Category</label>
+          <input class="v-input" type="text" name="Category" value="{{product.Category}}" placeholder="e.g. Electronics" list="cat-list">
+          <datalist id="cat-list">
+            <option value="Electronics">
+            <option value="Clothing">
+            <option value="Home & Kitchen">
+            <option value="Books">
+            <option value="Sports">
+            <option value="Toys">
+            <option value="Beauty">
+            <option value="Grocery">
+          </datalist>
+        </div>
+      </div>
+
+      <div class="v-form-group">
+        <label class="v-label">Description</label>
+        <textarea class="v-textarea" name="Description" rows="3">{{product.Description}}</textarea>
+      </div>
+
+      <div class="v-form-grid-2">
+        <div class="v-form-group">
+          <label class="v-label">Selling Price (₹)</label>
+          <input class="v-input" type="number" name="Price" value="{{product.Price}}" required>
+        </div>
+        <div class="v-form-group">
+          <label class="v-label">Original Price (₹)</label>
+          <input class="v-input" type="number" name="OldPrice" value="{{product.OldPrice}}">
+        </div>
+      </div>
+
+      <div class="v-form-group">
+        <label class="v-label">Discount %</label>
+        <input class="v-input" type="number" name="Offer" value="{{product.Offer}}" min="0" max="100">
+      </div>
+
+      <div class="v-form-group">
+        <label class="v-label">Replace Image (optional)</label>
+        <label class="v-upload-zone" for="image-upload">
+          <div class="v-upload-icon">📸</div>
+          <div class="v-upload-text"><strong>Click to upload</strong> new image</div>
+          <input type="file" id="image-upload" name="image" accept="image/*" onchange="previewImg(this)">
+        </label>
+        <img id="img-preview" style="display:none; width:100px; height:100px; object-fit:cover; border-radius:var(--radius-md); margin-top:0.75rem;" alt="preview">
+      </div>
+
+      <div style="display:flex; gap:0.75rem;">
+        <button type="submit" class="v-btn v-btn-primary">Save Changes</button>
+        <a href="/admin/products" class="v-btn v-btn-secondary">Cancel</a>
+      </div>
+    </form>
   </div>
 </div>
 
-
 <script>
-  function viewpic(event){
-   document.getElementById('imgview').src=URL.createObjectURL(event.target.files[0])
+function previewImg(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('img-preview');
+      img.src = e.target.result;
+      img.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
   }
+}
 </script>

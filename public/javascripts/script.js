@@ -1,176 +1,234 @@
-function addToCart(proId){
-    $.ajax({
-        url: '/add-to-cart/' + proId,
-        method: 'get',
-        success: (response) => {
-    if (response.status) {
-        let count = $('#cart-count').html();
-        count = parseInt(count) + 1;
-        $('#cart-count').html(count);  // ✅ Update cart count properly
-    }
+/* ═══════════════════════════════════════════════════════
+   V-CART — FRONTEND SCRIPT
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Toast Notifications ──────────────────────────────── */
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  const toast = document.createElement('div');
+  toast.className = `v-toast ${type}`;
+  toast.innerHTML = `
+    <span class="v-toast-icon">${icons[type] || icons.info}</span>
+    <span class="v-toast-msg">${message}</span>
+  `;
+
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('exit');
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
 }
 
+/* ── Navbar scroll effect ─────────────────────────────── */
+const navbar = document.getElementById('v-navbar');
+if (navbar) {
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+}
+
+/* ── Show/Hide Password Toggle ────────────────────────── */
+function togglePassword(fieldId, iconEl) {
+  const field = document.getElementById(fieldId);
+  if (!field) return;
+  const isPass = field.type === 'password';
+  field.type = isPass ? 'text' : 'password';
+  iconEl.style.opacity = isPass ? '0.5' : '1';
+}
+
+/* ── Cart: Add to Cart ────────────────────────────────── */
+function addToCart(productId) {
+  const btn = document.getElementById('btn-' + productId);
+  if (btn) {
+    btn.textContent = 'Adding...';
+    btn.disabled = true;
+  }
+
+  fetch('/add-to-cart/' + productId)
+    .then(r => r.json())
+    .then(data => {
+      if (data.status) {
+        // Update cart count badge
+        const badge = document.getElementById('cart-count');
+        if (badge && data.cartCount !== undefined) {
+          badge.textContent = data.cartCount;
+          badge.style.display = 'flex';
+        }
+
+        // Animate button
+        if (btn) {
+          btn.textContent = '✓ Added';
+          btn.classList.add('added');
+          setTimeout(() => {
+            btn.textContent = 'Add to Cart';
+            btn.classList.remove('added');
+            btn.disabled = false;
+          }, 2000);
+        }
+        showToast('Product added to cart! 🛒', 'success');
+      } else {
+        showToast('Failed to add product.', 'error');
+        if (btn) { btn.textContent = 'Add to Cart'; btn.disabled = false; }
+      }
+    })
+    .catch(() => {
+      showToast('Network error. Try again.', 'error');
+      if (btn) { btn.textContent = 'Add to Cart'; btn.disabled = false; }
     });
 }
 
+/* ── Cart: Change Quantity ────────────────────────────── */
+function changeQuantity(cartId, productId, count) {
+  const qtyEl = document.getElementById('qty-' + productId);
+  const subtotalEl = document.getElementById('subtotal-' + productId);
+  const qty = parseInt(qtyEl?.textContent || '1');
 
-
-function changeQuantity(cartId, productId, count, userId) {
-  let qtyElem = document.getElementById("qty-" + productId);
-  let currentQty = parseInt(qtyElem.innerText) || 0;
-
-  $.ajax({
-    url: '/change-product-quantity',
-    method: 'post',
-    data: {
-      cart: cartId,
-      product: productId,
-      count: count,
-      quantity: currentQty,
-      userId: userId   // 👈 send it
-    },
-    success: function(res) {
-  if (res.blockDecrement) {
-    // Prevent going below 1
-    alert("Minimum quantity is 1");
-    return;
-  }
-
-  if (res.removeProduct) {
-    $("#product-row-" + productId).remove();
-  } else {
-    $("#qty-" + productId).text(res.newQuantity);
-    $("#subtotal-" + productId).text("₹" + res.subtotal);
-  }
-  $("#grand-total").text("₹" + res.total);
-
-  // Disable minus button if qty is 1
-  if (res.newQuantity == 1) {
-    $("#minus-btn-" + productId).prop("disabled", true);
-  } else {
-    $("#minus-btn-" + productId).prop("disabled", false);
-  }
-}
-
-
-  });
-}
-
-
-$(document).ready(function () {
-  $("#checkout-form").submit(function (e) {
-    e.preventDefault(); // stop normal form submit
-
-    let form = $(this);
-    let formData = form.serialize();
-
-    let paymentMethod = form.find("select[name='payment-method']").val();
-
-    if (paymentMethod === "COD") {
-      // For COD → directly place order
-      $.post("/order-success", formData, function () {
-        window.location.href = "/order-success";
-
-      });
-    } else {
-      // For ONLINE → first create Razorpay order from backend
-      $.post("/create-order", formData, function (order) {
-        openRazorpay(order);
-      });
-    }
-  });
-});
-
-function openRazorpay(order) {
-  var options = {
-    "key": "rzp_test_RB2cjCJ7uO9UiR",  // your test key
-    "amount": order.amount,            // already in paise
-    "currency": order.currency,
-    "name": "My E-Commerce Store",
-    "description": "Order Payment",
-    "order_id": order.id,              // Razorpay order ID from backend
-    "handler": function (response) {
-      // verify payment at backend
-      $.ajax({
-        url: '/verify-payment',
-        method: 'post',
-        data: {
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature: response.razorpay_signature,
-          orderId: order.id
-        },
-        success: function (res) {
-          if (res.status) {
-            window.location.href = "/order-success";
-          } else {
-            alert("❌ Payment verification failed");
-          }
-        }
-      });
-    },
-    "prefill": {
-      "name": "Customer Name",
-      "email": "customer@example.com",
-      "contact": "9876543210"
-    },
-    "theme": {
-      "color": "#3399cc"
-    }
-  };
-
-  var rzp1 = new Razorpay(options);
-  rzp1.open();
-}
-
-
-$('#search-box').on('keyup', function() {
-  let query = $(this).val();
-  
-  $.ajax({
-    url: '/api/search',
-    method: 'get',
-    data: { q: query },
-    success: (products) => {
-      let productHtml = '';
-
-      if (products.length === 0) {
-        productHtml = `<p class="text-center text-muted py-4">No products found</p>`;
-      } else {
-        products.forEach(p => {
-          productHtml += `
-            <div class="row border-bottom py-3 align-items-center product-row">
-              <div class="col-md-3 text-center">
-                <img src="/productimages/${p._id}.jpg" class="img-fluid product-img">
-              </div>
-              <div class="col-md-6">
-                <h5>${p.Name}</h5>
-                <p class="text-muted small">${p.Category}</p>
-                <p class="text-muted small">${p.Description}</p>
-                
-              </div>
-              <div class="col-md-3 text-end">
-                <h4>₹${p.Price}</h4>
-                <button class="btn btn-primary btn-sm" onclick="addToCart('${p._id}')">Add to Cart</button>
-              </div>
-            </div>`;
-        });
+  fetch('/change-product-quantity', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cart: cartId, product: productId, count, quantity: qty })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.blockDecrement) {
+        showToast('Minimum quantity is 1. Remove the item to delete it.', 'info');
+        return;
       }
+      if (qtyEl) qtyEl.textContent = data.newQuantity;
+      if (subtotalEl) subtotalEl.textContent = '₹' + data.subtotal;
 
-      $('section .container').html(productHtml);
+      // Update both grand totals
+      ['grand-total', 'grand-total-2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '₹' + data.total;
+      });
+    })
+    .catch(() => showToast('Failed to update quantity.', 'error'));
+}
+
+/* ── Cart: Remove Product ─────────────────────────────── */
+function removeProduct(cartId, productId) {
+  const row = document.getElementById('row-' + productId);
+  if (row) {
+    row.style.transition = 'all 0.3s ease';
+    row.style.opacity = '0';
+    row.style.transform = 'translateX(30px)';
+  }
+
+  fetch('/remove-from-cart', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cartId, productId })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status) {
+        setTimeout(() => row?.remove(), 300);
+        ['grand-total', 'grand-total-2'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = '₹' + data.total;
+        });
+        const badge = document.getElementById('cart-count');
+        if (badge && data.cartCount !== undefined) {
+          badge.textContent = data.cartCount;
+          if (data.cartCount === 0) badge.style.display = 'none';
+        }
+        showToast('Item removed from cart', 'info');
+      } else {
+        // Undo visual animation
+        if (row) { row.style.opacity = '1'; row.style.transform = 'none'; }
+        showToast('Failed to remove item.', 'error');
+      }
+    })
+    .catch(() => {
+      if (row) { row.style.opacity = '1'; row.style.transform = 'none'; }
+      showToast('Network error.', 'error');
+    });
+}
+
+/* ── Wishlist ─────────────────────────────────────────── */
+function addToWishlist(productId) {
+  const btn = document.getElementById('wish-' + productId);
+
+  fetch('/add-to-wishlist/' + productId)
+    .then(r => r.json())
+    .then(data => {
+      if (data.status) {
+        if (btn) btn.classList.add('active');
+        showToast('Added to wishlist ❤️', 'success');
+      } else {
+        showToast('Failed to add to wishlist.', 'error');
+      }
+    })
+    .catch(() => showToast('Network error.', 'error'));
+}
+
+/* ── Live Search ──────────────────────────────────────── */
+const searchBox = document.getElementById('search-box');
+const searchDropdown = document.getElementById('search-dropdown');
+let searchTimeout;
+
+if (searchBox && searchDropdown) {
+  searchBox.addEventListener('input', function () {
+    clearTimeout(searchTimeout);
+    const q = this.value.trim();
+
+    if (q.length < 2) {
+      searchDropdown.classList.remove('active');
+      searchDropdown.innerHTML = '';
+      return;
+    }
+
+    searchTimeout = setTimeout(() => {
+      fetch('/api/search?q=' + encodeURIComponent(q))
+        .then(r => r.json())
+        .then(products => {
+          if (products.length === 0) {
+            searchDropdown.innerHTML = '<div style="padding:0.75rem 1rem; color:var(--text-muted); font-size:0.875rem;">No results found</div>';
+          } else {
+            searchDropdown.innerHTML = products.map(p => `
+              <a class="v-search-item" href="/product/${p._id}">
+                <img src="/productimages/${p._id}.jpg" alt="${p.Name}"
+                     onerror="this.style.display='none'">
+                <div>
+                  <div class="v-search-item-name">${p.Name}</div>
+                  <div class="v-search-item-price">₹${p.Price}</div>
+                </div>
+              </a>
+            `).join('');
+          }
+          searchDropdown.classList.add('active');
+        })
+        .catch(() => { searchDropdown.classList.remove('active'); });
+    }, 300);
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!searchBox.contains(e.target) && !searchDropdown.contains(e.target)) {
+      searchDropdown.classList.remove('active');
     }
   });
-});
+}
 
+/* ── Admin sidebar responsive toggle ─────────────────── */
+const sidebarToggle = document.getElementById('sidebar-toggle');
+if (sidebarToggle) {
+  sidebarToggle.style.display = 'block';
+}
 
-
-
-
-
-
-
-
-
-
-
-
+/* ── Signup password validation ──────────────────────── */
+const signupForm = document.getElementById('signup-form');
+if (signupForm) {
+  signupForm.addEventListener('submit', function(e) {
+    const pw = this.querySelector('[name="Password"]')?.value;
+    const confirm = this.querySelector('[name="confirm"]')?.value;
+    if (pw !== confirm) {
+      e.preventDefault();
+      showToast('Passwords do not match!', 'error');
+    }
+  });
+}

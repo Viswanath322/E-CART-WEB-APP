@@ -1,26 +1,35 @@
-<form action="/admin/Login" method="post" 
-      style="width:300px; margin:auto; margin-top: 150px; padding:20px; border:1px solid #ccc; border-radius:8px; background:#f9f9f9; font-family:Arial, sans-serif;">
+<div class="v-admin-login">
+  <div class="v-admin-login-card">
+    <div class="v-admin-login-icon">⚙️</div>
+    <h1 style="text-align:center; font-size:1.5rem; margin-bottom:0.25rem;">Admin Login</h1>
+    <p style="text-align:center; color:var(--text-muted); font-size:0.875rem; margin-bottom:1.75rem;">
+      V-Cart Admin Panel
+    </p>
 
-  <h2 style="text-align:center; margin-bottom:15px;">Login</h2>
-  
-  {{#if loginErr}}
-    <p class="text-danger" style="text-align:center; margin-bottom:10px;">{{loginErr}}</p>
-  {{/if}}
+    {{#if loginErr}}
+    <div style="background:rgba(255,71,87,0.12); border:1px solid rgba(255,71,87,0.3); border-radius:var(--radius-md); padding:0.75rem 1rem; margin-bottom:1.25rem; color:var(--danger); font-size:0.875rem;">
+      ⚠ {{loginErr}}
+    </div>
+    {{/if}}
 
-  <label for="email" style="display:block; margin-bottom:5px;">Email</label>
-  <input type="email" id="email" name="Email" placeholder="Enter your email" required
-         style="width:100%; padding:8px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px;">
-  
-  <label for="password" style="display:block; margin-bottom:5px;">Password</label>
-  <input type="password" id="password" name="Password" placeholder="Enter your password" required
-         style="width:100%; padding:8px; margin-bottom:15px; border:1px solid #ccc; border-radius:5px;">
-  
-  <button type="submit" 
-          style="width:100%; padding:10px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer;">
-    Login
-  </button>
+    <form action="/admin/Login" method="post">
+      <div class="v-form-group">
+        <label class="v-label">Email Address</label>
+        <input class="v-input" type="email" name="Email" placeholder="admin@vcart.com" required autocomplete="email">
+      </div>
+      <div class="v-form-group">
+        <label class="v-label">Password</label>
+        <div class="v-input-wrap">
+          <input class="v-input" type="password" id="admin-password" name="Password" placeholder="Admin password" required>
+          <span class="v-input-icon-right" onclick="togglePassword('admin-password', this)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+        </div>
+      </div>
 
-  <p style="text-align:center; margin-top:12px;">
-    <a href="/admin/logout" style="text-decoration:none; color:#007bff;">Logout</a>
-  </p>
-</form>
+      <button type="submit" class="v-btn v-btn-primary v-btn-block" style="margin-top:1.5rem;">
+        Sign In to Admin
+      </button>
+    </form>
+  </div>
+</div>

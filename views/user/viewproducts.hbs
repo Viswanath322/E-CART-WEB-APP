@@ -1,50 +1,94 @@
-<section>
-  <div class="container mt-4">
+<!-- HERO -->
+<section class="v-hero">
+  <div class="v-hero-tag">✦ Premium Shopping Experience</div>
+  <h1>Discover Amazing Products</h1>
+  <p>Shop from thousands of top-quality items with exclusive deals and fast delivery.</p>
+  <a href="#products" class="v-btn v-btn-primary v-btn-lg">
+    Shop Now
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+</section>
+
+<!-- CATEGORY FILTERS -->
+{{#if categories.length}}
+<div class="v-categories">
+  <a href="/" class="v-cat-chip {{#unless selectedCategory}}active{{/unless}}">All</a>
+  {{#each categories}}
+  <a href="/?category={{this}}" class="v-cat-chip {{#if (eq this ../selectedCategory)}}active{{/if}}">{{this}}</a>
+  {{/each}}
+</div>
+{{/if}}
+
+<!-- PRODUCTS GRID -->
+<div id="products">
+  {{#if products.length}}
+  <div class="v-products-grid">
     {{#each products}}
-    <div class="row border-bottom py-3 align-items-center product-row">
-      
-      <!-- Product Image -->
-      <div class="col-md-3 text-center">
-        <img src="/productimages/{{this._id}}.jpg" 
-             alt="{{this.Name}}" 
-             class="img-fluid product-img">
+    <div class="v-product-card" id="card-{{this._id}}">
+      <div class="v-product-img-wrap">
+        <a href="/product/{{this._id}}">
+          <img src="/productimages/{{this._id}}.jpg" alt="{{this.Name}}" loading="lazy"
+               onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%231C1B29%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%238B8BA0%22 font-size=%2240%22>📦</text></svg>'">
+        </a>
+        {{#if this.Offer}}
+        <span class="v-badge v-badge-offer">{{this.Offer}}% OFF</span>
+        {{/if}}
+        <button class="v-wishlist-btn" onclick="addToWishlist('{{this._id}}')" id="wish-{{this._id}}" title="Add to wishlist">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </button>
       </div>
-
-      <!-- Product Details -->
-      <div class="col-md-6">
-        <h5 class="mb-1 fw-semibold">{{this.Name}}</h5>
-
-        <!-- Rating -->
-        <div class="d-flex align-items-center mb-2">
-          <span class="badge bg-success me-2 rating-badge">4.2 ★</span>
-          <small class="text-muted">97 Ratings & 500 Reviews</small>
+      <div class="v-product-body">
+        {{#if this.Category}}
+        <div class="v-product-category">{{this.Category}}</div>
+        {{/if}}
+        <div class="v-product-name">
+          <a href="/product/{{this._id}}" style="color:inherit; text-decoration:none;">{{this.Name}}</a>
         </div>
-
-        <!-- Features -->
-        <ul class="mb-2 text-muted small feature-list">
-          <li>{{this.RAM}} RAM | {{this.Storage}} Storage</li>
-          <li>{{this.Display}}</li>
-          <li>{{this.Camera}}</li>
-          <li>{{this.Battery}}</li>
-          <li>{{this.Processor}}</li>
-        </ul>
-
-        <small class="text-secondary">1 Year Warranty on Handset & 6 Months on Accessories</small>
+        {{#if this.Description}}
+        <div class="v-product-desc">{{this.Description}}</div>
+        {{/if}}
+        <div class="v-rating">
+          <span class="v-stars">★★★★☆</span>
+          <span class="v-rating-count">(4.2)</span>
+        </div>
+        <div class="v-product-footer">
+          <div class="v-price-block">
+            {{#if this.OldPrice}}
+            <span class="v-old-price">₹{{this.OldPrice}}</span>
+            {{/if}}
+            <span class="v-price">₹{{this.Price}}</span>
+          </div>
+          <button class="v-add-btn" onclick="addToCart('{{this._id}}')" id="btn-{{this._id}}">
+            Add to Cart
+          </button>
+        </div>
       </div>
-
-      <!-- Price & Actions -->
-      <div class="col-md-3 text-end">
-        <h4 class="text-dark fw-bold">₹{{this.Price}}</h4>
-        <p class="mb-1">
-          <span class="text-muted text-decoration-line-through">₹{{this.OldPrice}}</span>
-          <span class="text-success fw-semibold"> {{this.Offer}}% off</span>
-        </p>
-        <p class="text-success small">Bank Offer Available</p>
-
-        <button class="btn btn-primary btn-sm" onclick="addToCart('{{this._id}}')">Add to Cart</button>
-      </div>
-
-    </div> <!-- end row -->
+    </div>
     {{/each}}
   </div>
-</section>
+
+  <!-- PAGINATION -->
+  {{#if (gt totalPages 1)}}
+  <div class="v-pagination">
+    {{#if (gt currentPage 1)}}
+    <a href="?page={{dec currentPage}}{{#if selectedCategory}}&category={{selectedCategory}}{{/if}}" class="v-page-btn">‹</a>
+    {{/if}}
+    {{#each (range 1 totalPages)}}
+    <a href="?page={{this}}{{#if ../selectedCategory}}&category={{../selectedCategory}}{{/if}}"
+       class="v-page-btn {{#if (eq this ../currentPage)}}active{{/if}}">{{this}}</a>
+    {{/each}}
+    {{#if (lt currentPage totalPages)}}
+    <a href="?page={{inc currentPage}}{{#if selectedCategory}}&category={{selectedCategory}}{{/if}}" class="v-page-btn">›</a>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  {{else}}
+  <div class="v-empty-state">
+    <div class="v-empty-icon">📦</div>
+    <div class="v-empty-title">No products found</div>
+    <div class="v-empty-desc">Try a different category or check back later.</div>
+    <a href="/" class="v-btn v-btn-primary">View All Products</a>
+  </div>
+  {{/if}}
+</div>

@@ -1,0 +1,65 @@
+<div class="v-wishlist-page">
+  <div class="v-section-header">
+    <h1 class="v-section-title">My Wishlist ❤️</h1>
+    <a href="/" class="v-btn v-btn-secondary v-btn-sm">Continue Shopping</a>
+  </div>
+
+  {{#if products.length}}
+  <div class="v-products-grid">
+    {{#each products}}
+    <div class="v-product-card" id="wish-card-{{this._id}}">
+      <div class="v-product-img-wrap">
+        <a href="/product/{{this._id}}">
+          <img src="/productimages/{{this._id}}.jpg" alt="{{this.Name}}" loading="lazy"
+               onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%231C1B29%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%238B8BA0%22 font-size=%2240%22>📦</text></svg>'">
+        </a>
+        <button class="v-wishlist-btn active" onclick="removeWishlistItem('{{this._id}}')" id="wish-{{this._id}}" title="Remove from wishlist">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="v-product-body">
+        {{#if this.Category}}
+        <div class="v-product-category">{{this.Category}}</div>
+        {{/if}}
+        <div class="v-product-name">{{this.Name}}</div>
+        <div class="v-product-footer">
+          <div class="v-price-block">
+            {{#if this.OldPrice}}<span class="v-old-price">₹{{this.OldPrice}}</span>{{/if}}
+            <span class="v-price">₹{{this.Price}}</span>
+          </div>
+          <button class="v-add-btn" onclick="addToCart('{{this._id}}')" id="btn-{{this._id}}">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{else}}
+  <div class="v-empty-state">
+    <div class="v-empty-icon">❤️</div>
+    <div class="v-empty-title">Your wishlist is empty</div>
+    <div class="v-empty-desc">Save items you love for later by clicking the heart icon.</div>
+    <a href="/" class="v-btn v-btn-primary">Browse Products</a>
+  </div>
+  {{/if}}
+</div>
+
+<script>
+async function removeWishlistItem(productId) {
+  const res = await fetch('/remove-from-wishlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ productId })
+  });
+  const data = await res.json();
+  if (data.status) {
+    const card = document.getElementById('wish-card-' + productId);
+    card.style.transition = 'all 0.3s ease';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.9)';
+    setTimeout(() => card.remove(), 300);
+    showToast('Removed from wishlist', 'info');
+  }
+}
+</script>

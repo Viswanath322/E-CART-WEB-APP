@@ -1,0 +1,73 @@
+<div class="v-detail-page">
+  <!-- Image -->
+  <div class="v-detail-img-wrap">
+    <img src="/productimages/{{product._id}}.jpg" alt="{{product.Name}}"
+         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22><rect fill=%22%231C1B29%22 width=%22400%22 height=%22400%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%238B8BA0%22 font-size=%2280%22>📦</text></svg>'">
+  </div>
+
+  <!-- Details -->
+  <div>
+    {{#if product.Category}}
+    <div class="v-product-category">{{product.Category}}</div>
+    {{/if}}
+    <h1 style="font-size:1.75rem; margin-bottom:0.5rem;">{{product.Name}}</h1>
+
+    <div class="v-rating" style="margin-bottom:0.75rem;">
+      <span class="v-stars">★★★★☆</span>
+      <span class="v-rating-count">4.2 (97 reviews)</span>
+    </div>
+
+    <div class="v-detail-price">₹{{product.Price}}</div>
+    {{#if product.OldPrice}}
+    <div style="margin-bottom:0.5rem;">
+      <span class="v-old-price" style="font-size:1rem;">₹{{product.OldPrice}}</span>
+      {{#if product.Offer}}
+      <span class="v-offer" style="font-size:0.9rem; margin-left:0.5rem;">{{product.Offer}}% off</span>
+      {{/if}}
+    </div>
+    {{/if}}
+
+    <div class="v-divider"></div>
+
+    {{#if product.Description}}
+    <div style="margin-bottom:1.25rem;">
+      <div style="font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.5px;">Description</div>
+      <p style="font-size:0.9rem; color:var(--text-muted); line-height:1.7;">{{product.Description}}</p>
+    </div>
+    {{/if}}
+
+    <div style="display:flex; gap:0.75rem; padding:0.75rem; background:var(--surface); border-radius:var(--radius-md); margin-bottom:1.5rem;">
+      <div style="flex:1; text-align:center;">
+        <div style="font-size:1.1rem;">🚚</div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">Free Delivery</div>
+      </div>
+      <div style="flex:1; text-align:center;">
+        <div style="font-size:1.1rem;">🔄</div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">Easy Returns</div>
+      </div>
+      <div style="flex:1; text-align:center;">
+        <div style="font-size:1.1rem;">🔒</div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">Secure Payment</div>
+      </div>
+      <div style="flex:1; text-align:center;">
+        <div style="font-size:1.1rem;">⭐</div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">Top Rated</div>
+      </div>
+    </div>
+
+    <div class="v-detail-actions">
+      <button class="v-btn v-btn-primary v-btn-lg" onclick="addToCart('{{product._id}}')" id="btn-{{product._id}}" style="flex:1;">
+        Add to Cart
+      </button>
+      <button class="v-btn v-btn-secondary" onclick="addToWishlist('{{product._id}}')" id="wish-{{product._id}}" title="Add to wishlist">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        Wishlist
+      </button>
+    </div>
+
+    <a href="/" style="display:inline-flex; align-items:center; gap:0.4rem; margin-top:1rem; font-size:0.85rem; color:var(--text-muted);">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to products
+    </a>
+  </div>
+</div>

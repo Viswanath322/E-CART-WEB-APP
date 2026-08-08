@@ -1,44 +1,85 @@
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-  <div class="card shadow-lg border-0 rounded-4" style="width: 500px;">
-    <div class="card-header bg-dark text-white text-center rounded-top-4">
-      <h3 class="mb-0">➕ Add New Product</h3>
-    </div>
-    <div class="card-body p-4">
-      <form action="/admin/addproducts" enctype="multipart/form-data" method="post">
+<div style="max-width:700px;">
+  <div style="margin-bottom:1.5rem;">
+    <h1 style="font-size:1.5rem; margin-bottom:0.25rem;">Add New Product</h1>
+    <p style="color:var(--text-muted); font-size:0.875rem;">Fill in the details to add a product to your store.</p>
+  </div>
 
-        <!-- Name -->
-        <div class="mb-3">
-          <label class="form-label fw-bold">Product Name</label>
-          <input type="text" name="Name" class="form-control" placeholder="Enter product name" required>
+  <div class="v-form-card">
+    <form action="/admin/addproducts" method="post" enctype="multipart/form-data" id="add-product-form">
+      <div class="v-form-grid-2">
+        <div class="v-form-group">
+          <label class="v-label">Product Name *</label>
+          <input class="v-input" type="text" name="Name" placeholder="e.g. iPhone 16 Pro" required>
         </div>
-
-        <!-- Category -->
-        <div class="mb-3">
-          <label class="form-label fw-bold">Category</label>
-          <input type="text" name="Category" class="form-control" placeholder="Enter product category" required>
+        <div class="v-form-group">
+          <label class="v-label">Category *</label>
+          <input class="v-input" type="text" name="Category" placeholder="e.g. Electronics" list="cat-list" required>
+          <datalist id="cat-list">
+            <option value="Electronics">
+            <option value="Clothing">
+            <option value="Home & Kitchen">
+            <option value="Books">
+            <option value="Sports">
+            <option value="Toys">
+            <option value="Beauty">
+            <option value="Grocery">
+          </datalist>
         </div>
+      </div>
 
-        <!-- Price -->
-        <div class="mb-3">
-          <label class="form-label fw-bold">Price (₹)</label>
-          <input type="number" name="Price" class="form-control" placeholder="Enter price" required>
+      <div class="v-form-group">
+        <label class="v-label">Description</label>
+        <textarea class="v-textarea" name="Description" placeholder="Describe the product features, specs, etc." rows="3"></textarea>
+      </div>
+
+      <div class="v-form-grid-2">
+        <div class="v-form-group">
+          <label class="v-label">Selling Price (₹) *</label>
+          <input class="v-input" type="number" name="Price" placeholder="999" min="0" required>
         </div>
-
-        <!-- Description -->
-        <div class="mb-3">
-          <label class="form-label fw-bold">Description</label>
-          <textarea name="Description" class="form-control" rows="3" placeholder="Enter product description" required></textarea>
+        <div class="v-form-group">
+          <label class="v-label">Original Price (₹)</label>
+          <input class="v-input" type="number" name="OldPrice" placeholder="1499" min="0">
         </div>
+      </div>
 
-        <!-- Image Upload -->
-        <div class="mb-3">
-          <label class="form-label fw-bold">Product Image</label>
-          <input type="file" name="image" class="form-control" required>
-        </div>
+      <div class="v-form-group">
+        <label class="v-label">Discount % (auto-shown if OldPrice set)</label>
+        <input class="v-input" type="number" name="Offer" placeholder="33" min="0" max="100">
+      </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-success w-100 rounded-pill"> Save Product</button>
-      </form>
-    </div>
+      <div class="v-form-group">
+        <label class="v-label">Product Image *</label>
+        <label class="v-upload-zone" for="image-upload">
+          <div class="v-upload-icon">📸</div>
+          <div class="v-upload-text"><strong>Click to upload</strong> or drag & drop</div>
+          <div style="font-size:0.75rem; color:var(--text-dim); margin-top:0.3rem;">JPG, PNG (max 5MB)</div>
+          <input type="file" id="image-upload" name="image" accept="image/*" required onchange="previewImg(this)">
+        </label>
+        <img id="img-preview" style="display:none; width:100px; height:100px; object-fit:cover; border-radius:var(--radius-md); margin-top:0.75rem;" alt="preview">
+      </div>
+
+      <div style="display:flex; gap:0.75rem; margin-top:0.5rem;">
+        <button type="submit" class="v-btn v-btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Product
+        </button>
+        <a href="/admin/products" class="v-btn v-btn-secondary">Cancel</a>
+      </div>
+    </form>
   </div>
 </div>
+
+<script>
+function previewImg(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('img-preview');
+      img.src = e.target.result;
+      img.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>

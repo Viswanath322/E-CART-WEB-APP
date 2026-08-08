@@ -1,24 +1,67 @@
-<form action="/Signup" method="post" style="width:300px; margin:auto; padding:20px; border:1px solid #ccc; border-radius:8px; background:#f9f9f9; font-family:Arial, sans-serif;">
-  <h2 style="text-align:center; margin-bottom:15px;">Sign Up</h2>
-  
-  <label for="name" style="display:block; margin-bottom:5px;">Full Name</label>
-  <input type="text" id="name" name="name" placeholder="Enter your name" required
-         style="width:100%; padding:8px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px;">
-  
-  <label for="email" style="display:block; margin-bottom:5px;">Email</label>
-  <input type="email" id="email" name="Email" placeholder="Enter your email" required
-         style="width:100%; padding:8px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px;">
-  
-  <label for="Password" style="display:block; margin-bottom:5px;">Password</label>
-  <input type="Password" id="Password" name="Password" placeholder="Create a password" required
-         style="width:100%; padding:8px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px;">
-  
-  <label for="confirm" style="display:block; margin-bottom:5px;">Confirm Password</label>
-  <input type="Password" id="confirm" name="confirm" placeholder="Re-enter password" required
-         style="width:100%; padding:8px; margin-bottom:15px; border:1px solid #ccc; border-radius:5px;">
-  
-  <button type="submit" 
-          style="width:100%; padding:10px; background:#28a745; color:white; border:none; border-radius:5px; cursor:pointer;">
-    Sign Up
-  </button>
-</form>
+<div class="v-auth-page">
+  <div class="v-auth-left">
+    <div class="v-auth-brand">V-Cart</div>
+    <p class="v-auth-tagline">Join thousands of happy shoppers. Get exclusive deals and fast delivery.</p>
+    <div style="margin-top:3rem; position:relative; z-index:1;">
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; color:rgba(255,255,255,0.85); font-size:0.9rem;">
+        <span style="font-size:1.2rem;">🚀</span> Fast Delivery
+      </div>
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; color:rgba(255,255,255,0.85); font-size:0.9rem;">
+        <span style="font-size:1.2rem;">🔒</span> Secure Payments
+      </div>
+      <div style="display:flex; align-items:center; gap:0.75rem; color:rgba(255,255,255,0.85); font-size:0.9rem;">
+        <span style="font-size:1.2rem;">💎</span> Premium Products
+      </div>
+    </div>
+  </div>
+
+  <div class="v-auth-right">
+    <div class="v-auth-card">
+      <h1 class="v-auth-title">Create account</h1>
+      <p class="v-auth-sub">Start your shopping journey with V-Cart</p>
+
+      <form action="/Signup" method="post" id="signup-form">
+        <div class="v-form-group">
+          <label class="v-label" for="name">Full Name</label>
+          <input class="v-input" type="text" id="name" name="name" placeholder="John Doe" required autocomplete="name">
+        </div>
+        <div class="v-form-group">
+          <label class="v-label" for="email">Email Address</label>
+          <input class="v-input" type="email" id="email" name="Email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="v-form-group">
+          <label class="v-label" for="phone">Phone Number</label>
+          <input class="v-input" type="tel" id="phone" name="Phone" placeholder="+91 98765 43210" autocomplete="tel">
+        </div>
+        <div class="v-form-group">
+          <label class="v-label" for="password">Password</label>
+          <div class="v-input-wrap">
+            <input class="v-input" type="password" id="password" name="Password" placeholder="Min 8 characters" required minlength="8" autocomplete="new-password">
+            <span class="v-input-icon-right" onclick="togglePassword('password', this)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="v-form-group">
+          <label class="v-label" for="confirm">Confirm Password</label>
+          <div class="v-input-wrap">
+            <input class="v-input" type="password" id="confirm" name="confirm" placeholder="Repeat password" required autocomplete="new-password">
+            <span class="v-input-icon-right" onclick="togglePassword('confirm', this)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
+          </div>
+        </div>
+
+        <button type="submit" class="v-btn v-btn-primary v-btn-block" style="margin-top:1.5rem;" id="signup-btn">
+          Create Account
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </form>
+
+      <div style="text-align:center; margin-top:1.5rem; font-size:0.875rem; color:var(--text-muted);">
+        Already have an account?
+        <a href="/Login" style="color:var(--primary-light); font-weight:600; margin-left:0.25rem;">Sign in</a>
+      </div>
+    </div>
+  </div>
+</div>

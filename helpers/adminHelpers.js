@@ -1,46 +1,105 @@
+require('dotenv').config()
 var db = require('../config/connection')
 const collection = require('../config/collections')
-const util = require('util')
 const bcrypt = require('bcrypt')
-const { promiseHooks } = require('v8')
-const { pipeline } = require('stream')
-const { log } = require('console')
-const objId=require('mongodb').ObjectId
-
+const objId = require('mongodb').ObjectId
 
 module.exports = {
+
   doLogin: (adminData) => {
-  return new Promise(async (resolve, reject) => {
-    let response = {}
-    
-    // Normalize keys (accept both lowercase and uppercase from form)
-    const email = adminData.Email || adminData.email
-    const password = adminData.Password || adminData.password
+    return new Promise(async (resolve, reject) => {
+      let response = {}
+      const email = adminData.Email || adminData.email
+      const password = adminData.Password || adminData.password
 
-    console.log("🔍 Looking for admin:", email)
+      let admin = await db.get().collection(collection.ADMIN_COLLECTION)
+        .findOne({ Email: email })
 
-    let admin = await db.get().collection(collection.ADMIN_COLLECTION)
-      .findOne({ Email: email })   // DB has Email with capital "E"
+      if (admin) {
+        bcrypt.compare(password, admin.Password).then((status) => {
+          if (status) {
+            response.admin = admin
+            response.status = true
+            resolve(response)
+          } else {
+            resolve({ status: false })
+          }
+        })
+      } else {
+        resolve({ status: false })
+      }
+    })
+  },
 
-    if (admin) {
-      console.log("✅ Admin found:", admin.Email)
-      bcrypt.compare(password, admin.Password).then((status) => {
-        if (status) {
-          console.log("✅ Password matched")
-          response.admin = admin
-          response.status = true
-          resolve(response)
-        } else {
-          console.log("❌ Invalid password")
-          resolve({ status: false })
-        }
-      })
-    } else {
-      console.log("❌ No admin found with this email")
-      resolve({ status: false })
-    }
-  })
+  getDashboardStats: () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let totalProducts = await db.get().collection(collection.PRODUCT_COLLECTION).countDocuments()
+        let totalUsers = await db.get().collection(collection.USER_COLLECTION).countDocuments()
+        let totalOrders = await db.get().collection(collection.ORDER_COLLECTION).countDocuments()
+
+        let revenueAgg = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+          { $group: { _id: null, total: { $sum: "$totalAmount" } } }
+        ]).toArray()
+
+        let totalRevenue = revenueAgg.length > 0 ? revenueAgg[0].total : 0
+
+        let recentOrders = await db.get().collection(collection.ORDER_COLLECTION)
+          .find().sort({ date: -1 }).limit(5).toArray()
+
+        // Orders by status counts
+        let statusAgg = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+          { $group: { _id: "$status", count: { $sum: 1 } } }
+        ]).toArray()
+
+        let ordersByStatus = {}
+        statusAgg.forEach(s => { ordersByStatus[s._id] = s.count })
+
+        resolve({ totalProducts, totalUsers, totalOrders, totalRevenue, recentOrders, ordersByStatus })
+      } catch (err) {
+        reject(err)
+      }
+    })
+  },
+
+  getAllOrders: () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let orders = await db.get().collection(collection.ORDER_COLLECTION)
+          .find().sort({ date: -1 }).toArray()
+        resolve(orders)
+      } catch (err) {
+        reject(err)
+      }
+    })
+  },
+
+  updateOrderStatus: (orderId, status) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await db.get().collection(collection.ORDER_COLLECTION).updateOne(
+          { _id: new objId(orderId) },
+          { $set: { status: status } }
+        )
+        resolve()
+      } catch (err) {
+        reject(err)
+      }
+    })
+  },
+
+  getAllUsers: () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let users = await db.get().collection(collection.USER_COLLECTION)
+          .find({}, { projection: { Password: 0 } })
+          .sort({ _id: -1 })
+          .toArray()
+        resolve(users)
+      } catch (err) {
+        reject(err)
+      }
+    })
+  }
+
 }
-
-}
-

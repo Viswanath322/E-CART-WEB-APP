@@ -1,0 +1,85 @@
+<div class="v-table-card">
+  <div class="v-table-header">
+    <span class="v-table-title">All Orders</span>
+    <span style="font-size:0.8rem; color:var(--text-muted);">{{orders.length}} orders total</span>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="v-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Payment</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Update Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each orders}}
+        <tr>
+          <td style="font-family:monospace; font-size:0.75rem; color:var(--primary-light);">#{{this._id}}</td>
+          <td>
+            <div style="font-weight:600; font-size:0.875rem;">{{this.deliveryDetails.name}}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">{{this.deliveryDetails.mobile}}</div>
+          </td>
+          <td style="font-weight:700;">₹{{this.totalAmount}}</td>
+          <td>
+            <span class="v-status-chip v-status-{{toLowerCase this.paymentMethod}}">
+              {{this.paymentMethod}}
+            </span>
+          </td>
+          <td>
+            <span class="v-status-chip v-status-{{toLowerCase this.status}}" id="status-{{this._id}}">
+              {{this.status}}
+            </span>
+          </td>
+          <td style="color:var(--text-muted); font-size:0.8rem;">{{this.date}}</td>
+          <td>
+            <select class="v-status-select" onchange="updateOrderStatus('{{this._id}}', this.value, this)">
+              <option value="">Change...</option>
+              <option value="Placed">Placed</option>
+              <option value="Processing">Processing</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </td>
+        </tr>
+        {{else}}
+        <tr>
+          <td colspan="7" style="text-align:center; color:var(--text-muted); padding:3rem;">
+            No orders yet
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+async function updateOrderStatus(orderId, status, selectEl) {
+  if (!status) return;
+  try {
+    const res = await fetch('/admin/update-order-status/' + orderId, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    });
+    const data = await res.json();
+    if (data.status) {
+      const badge = document.getElementById('status-' + orderId);
+      badge.className = 'v-status-chip v-status-' + status.toLowerCase();
+      badge.textContent = status;
+      showToast('Order status updated to ' + status, 'success');
+      selectEl.value = '';
+    } else {
+      showToast('Failed to update status', 'error');
+    }
+  } catch (err) {
+    showToast('Error updating status', 'error');
+  }
+}
+</script>

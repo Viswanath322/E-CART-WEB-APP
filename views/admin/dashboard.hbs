@@ -1,0 +1,120 @@
+<!-- KPI Cards -->
+<div class="v-kpi-grid">
+  <div class="v-kpi-card">
+    <div class="v-kpi-icon purple">💰</div>
+    <div>
+      <div class="v-kpi-value">₹{{totalRevenue}}</div>
+      <div class="v-kpi-label">Total Revenue</div>
+    </div>
+  </div>
+  <div class="v-kpi-card">
+    <div class="v-kpi-icon pink">📦</div>
+    <div>
+      <div class="v-kpi-value">{{totalOrders}}</div>
+      <div class="v-kpi-label">Total Orders</div>
+    </div>
+  </div>
+  <div class="v-kpi-card">
+    <div class="v-kpi-icon green">👥</div>
+    <div>
+      <div class="v-kpi-value">{{totalUsers}}</div>
+      <div class="v-kpi-label">Registered Users</div>
+    </div>
+  </div>
+  <div class="v-kpi-card">
+    <div class="v-kpi-icon blue">🏷️</div>
+    <div>
+      <div class="v-kpi-value">{{totalProducts}}</div>
+      <div class="v-kpi-label">Products Listed</div>
+    </div>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+  <!-- Order Status chart -->
+  <div class="v-card">
+    <div class="v-card-title">Orders by Status</div>
+    <canvas id="statusChart" height="200"></canvas>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="v-card">
+    <div class="v-card-title">Quick Actions</div>
+    <div style="display:flex; flex-direction:column; gap:0.75rem;">
+      <a href="/admin/addproducts" class="v-btn v-btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add New Product
+      </a>
+      <a href="/admin/orders" class="v-btn v-btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17H7A5 5 0 017 7h2"/><path d="M15 7h2a5 5 0 010 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Manage Orders
+      </a>
+      <a href="/admin/users" class="v-btn v-btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        View Users
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Orders Table -->
+<div class="v-table-card">
+  <div class="v-table-header">
+    <span class="v-table-title">Recent Orders</span>
+    <a href="/admin/orders" class="v-btn v-btn-secondary v-btn-sm">View All</a>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="v-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Payment</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each recentOrders}}
+        <tr>
+          <td style="font-family:monospace; font-size:0.8rem; color:var(--primary-light);">#{{this._id}}</td>
+          <td>{{this.deliveryDetails.name}}</td>
+          <td style="font-weight:700;">₹{{this.totalAmount}}</td>
+          <td><span class="v-status-chip v-status-{{toLowerCase this.paymentStatus}}">{{this.paymentStatus}}</span></td>
+          <td><span class="v-status-chip v-status-{{toLowerCase this.status}}">{{this.status}}</span></td>
+          <td style="color:var(--text-muted); font-size:0.8rem;">{{this.date}}</td>
+        </tr>
+        {{else}}
+        <tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:2rem;">No orders yet</td></tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// Status chart
+const ctx = document.getElementById('statusChart');
+if (ctx) {
+  const statusData = {{{json ordersByStatus}}};
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(statusData),
+      datasets: [{
+        data: Object.values(statusData),
+        backgroundColor: ['#6C63FF','#43E97B','#54A0FF','#FF6584','#F7B731'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#8B8BA0', padding: 16, font: { size: 12 } } }
+      },
+      cutout: '70%'
+    }
+  });
+}
+</script>

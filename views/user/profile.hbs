@@ -1,0 +1,76 @@
+<div class="v-profile-page">
+  <div class="v-section-header">
+    <h1 class="v-section-title">My Profile</h1>
+  </div>
+
+  <!-- Avatar + name -->
+  <div class="v-card" style="text-align:center; margin-bottom:1.5rem;">
+    <div class="v-avatar-lg">{{user.name.[0]}}</div>
+    <h2 style="font-size:1.25rem; margin-bottom:0.25rem;">{{user.name}}</h2>
+    <p style="color:var(--text-muted); font-size:0.875rem;">{{user.Email}}</p>
+    <div style="display:flex; gap:1rem; justify-content:center; margin-top:1rem;">
+      <a href="/view-orders" class="v-btn v-btn-secondary v-btn-sm">My Orders</a>
+      <a href="/wishlist" class="v-btn v-btn-secondary v-btn-sm">Wishlist</a>
+    </div>
+  </div>
+
+  <!-- Edit form -->
+  <div class="v-card">
+    <div class="v-card-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Edit Profile
+    </div>
+
+    <div id="profile-success" style="display:none; background:rgba(67,233,123,0.1); border:1px solid rgba(67,233,123,0.3); border-radius:var(--radius-md); padding:0.75rem 1rem; margin-bottom:1rem; color:var(--success); font-size:0.875rem;">
+      ✓ Profile updated successfully!
+    </div>
+
+    <form id="profile-form">
+      <div class="v-form-group">
+        <label class="v-label">Full Name</label>
+        <input class="v-input" type="text" name="name" value="{{user.name}}" placeholder="Your full name">
+      </div>
+      <div class="v-form-group">
+        <label class="v-label">Email Address</label>
+        <input class="v-input" type="email" value="{{user.Email}}" disabled style="opacity:0.6; cursor:not-allowed;">
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.35rem;">Email cannot be changed</div>
+      </div>
+      <div class="v-form-group">
+        <label class="v-label">Phone Number</label>
+        <input class="v-input" type="tel" name="Phone" value="{{user.Phone}}" placeholder="+91 98765 43210">
+      </div>
+      <div class="v-form-group">
+        <label class="v-label">Default Address</label>
+        <textarea class="v-textarea" name="Address" placeholder="Your delivery address">{{user.Address}}</textarea>
+      </div>
+
+      <button type="button" class="v-btn v-btn-primary" onclick="updateProfile()">
+        Save Changes
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+async function updateProfile() {
+  const form = document.getElementById('profile-form');
+  const data = {
+    name: form.querySelector('[name="name"]').value,
+    Phone: form.querySelector('[name="Phone"]').value,
+    Address: form.querySelector('[name="Address"]').value,
+  };
+  const res = await fetch('/profile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  const result = await res.json();
+  if (result.status) {
+    document.getElementById('profile-success').style.display = 'block';
+    showToast('Profile updated!', 'success');
+    setTimeout(() => document.getElementById('profile-success').style.display = 'none', 3000);
+  } else {
+    showToast('Update failed. Try again.', 'error');
+  }
+}
+</script>
